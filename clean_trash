@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+if [ "$1" = "clean" ]
+then 
+  echo "Permanently delete all the trash files."
+  \rm -rIv ~/.trash/20*
+  t=`date +"%Y-%m-%d/%Hh%Mm%Ss"`
+  echo "$t Clean trash" >> ~/.trash/log
+else
+  echo "Enter the following command to clean all the trash files:"
+  echo "./clean_trash clean"
+fi
+
