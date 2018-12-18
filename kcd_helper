@@ -1,0 +1,135 @@
+#!/bin/bash
+
+#HELP kcd <shortcut> 
+#HELP   goes to the directory defined by <shortcut>
+#HELP   Shortcuts are defined in $HOME/.kcd_index
+#HELP   Example of shortcuts to define in index file $HOME/.kcd_index
+#HELP   /home/johndoe/utils     => Defines "utils" as a shortcut for "/home/johndoe/utils
+#HELP                              (The last part of the directory is the shortcut)
+#HELP   /home/johndoe/utils u   => Defines "utils" and "u" as shortcuts for "/home/johndoe/utils
+#HELP                              (The last part of the directory and "u" are the shortcuts)
+#HELP   /home/johndoe/utils/ u  => Defines "u" as a shortcut for "/home/johndoe/utils
+#HELP                              (Adding a "/" after "utils" disables "utils" as a shortcut)
+#HELP   If the shortcut is not defined in the index file, then kcd offers to edit the index file.
+#HELP kcd 
+#HELP   goes to the last directory where kcd was called
+#HELP   (This does not include calls witch kcd -e, kcd -a, or kcd -h)
+
+# Default destination is current directory
+export kcd_destination='.'
+
+
+# Check existence of index_file
+#=========================================
+index_file="$HOME/.kcd_index"
+if [ ! -e $index_file ]; then
+    echo "Could not find directory file "$index_file
+    # In that case, this script will offer to create the directory file.
+fi
+
+# Options
+#=========================================
+just_echo="FALSE"
+if [ "$1" = "-e" ]; then
+    #HELP kcd -e <shortcut> 
+    #HELP   returns the full name of the directory
+    just_echo="TRUE"
+    shift
+elif [ "$1" = "-a" ]; then
+    #HELP kcd -a
+    #HELP   adds the current directory in the index file
+    pwd >> $index_file
+    gedit --new-window $index_file &
+    return
+elif [ "$1" = "-h" ]; then
+    #HELP kcd -h
+    #HELP   display kcd help
+    cat $( which kcd_helper) | sed -n "s/^\( \)*#HELP //pg" 
+    return
+elif [ "$1" = "--install" ]; then
+    #HELP kcd_helper --install
+    #HELP   modify ~/.bashrc to install kcd
+    #HELP kcd_helper --install other_file_name
+    #HELP   installs kcd in another file (e.g. .profile or .bashrc.$USER)
+    if [ -z "$2" ]; then
+        target_file="$HOME/.bashrc" 
+    else
+        target_file=$2
+    fi
+    #TODO: check that target file does not already contain the kcd declaration.
+    #TODO: check that target file exists.
+    #TODO: add path of kcd helper
+    echo "Target file : "$target_file
+    echo "You can define kcd in you ~/.bashrc file with the command: kcd --install"
+    echo "To specify another file, use: kcd --install other_file_name"
+    read -e -p "Do you want to install kcd by declaring it in $target_file ? (N/y):" add_in_target_file
+    ls $target_file
+    if [[ $add_in_target_file =~ (y|Y)(e|E)?(s|S)?$ ]]; then
+        echo "Adding kcd declaration"
+        cat $0 | sed -n "s/^#KCD_INSTALL //pg" >> "$target_file"
+    fi    
+    exit
+fi
+
+#KCD_INSTALL 
+#KCD_INSTALL # kcd (A tools to move between directories)
+#KCD_INSTALL function kcd(){
+#KCD_INSTALL     source kcd_helper $*
+#KCD_INSTALL     cd $kcd_destination
+#KCD_INSTALL }
+#KCD_INSTALL export -f kcd
+#KCD_INSTALL 
+
+
+# Arguments
+#=========================================
+if [ "$#" = "0" ]; then
+    # Set destination as the variable last_kcd_location
+    # (Note: not the content of the variable)
+    # Later, the script will check if variables in the destination are set.
+    # If $last_kcd_location is not set, that will trigger the appropriate warning.
+    kcd_destination='$last_kcd_location'
+else
+    # Get keyword
+    keyword=$1
+    # Display the directory with an extra space at the end of each line
+    # Search for a line that starts not with #, then contains the keyword, followed by a space.
+    # Keep first match, keep first field
+    kcd_destination=$( sed 's/$/ /g' $index_file | grep "^[^#].*\b$keyword "| head -1 | cut -f 1 -d ' ' )
+    unset keyword
+fi
+
+# Check, interpret, and offer to edit
+#=========================================
+# If no match, offer to edit the directory
+if [ -z "$kcd_destination" ]; then
+    read -e -p "Could not find a matching address. Do you want to add one? (N/y):" add_destination
+    # If yes, then edit directory file
+    if [[ $add_destination =~ (y|Y)(e|E)?(s|S)?$ ]]; then
+        gedit --new-window $index_file &
+    fi
+else
+    # Check if destination starts with an env variable, and this env variable is not empty
+    destination_env_variable=$( echo $destination | cut -f 1 -d "/" | grep -o "^$.*" )
+    if [ ! -z "$destination_env_variable" ]; then
+        destination_start=`eval echo $destination_env_variable`
+        if [ "$destination_start" = "" ]; then
+            echo "Destination starts with empty variable "$destination_env_variable". Do nothing."
+            return
+        fi
+    fi
+
+    # Evaluate destination
+    kcd_destination=`eval echo $kcd_destination`
+    if [ "$just_echo" = "TRUE" ]; then
+        echo $kcd_destination
+       
+    else
+        export last_kcd_location=$( pwd )
+        mkdir -p $kcd_destination
+    fi
+fi
+unset index_file just_echo destination_env_variable destination_start add_destination
+
+
+
