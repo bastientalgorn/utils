@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#HELP kcd is a tool to navigate directories from command line
+#HELP
 #HELP kcd <shortcut> 
 #HELP   goes to the directory defined by <shortcut>
 #HELP   Shortcuts are defined in $HOME/.kcd_index
