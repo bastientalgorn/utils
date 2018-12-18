@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Get current directory
+curDir=`pwd`
+# Create directory name with date and time
+t=`date +"%Y-%m-%d/%Hh%Mm%Ss"`
+
+
+for var in "$@"
+do
+    echo "move $var to ~/.trash/$t$curDir"
+    mkdir -p ~/.trash/$t$curDir
+    mv $var ~/.trash/$t$curDir
+    echo $t' '`pwd`' '$@ >> ~/.trash/log
+done
