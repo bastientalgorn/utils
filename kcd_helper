@@ -27,6 +27,18 @@
 #HELP kcd 
 #HELP   goes to the last directory where kcd was called
 #HELP   (This does not include calls witch kcd -e, kcd -a, or kcd -h)
+#HELP 
+#HELP Installation: 
+#HELP   Make sure that kcd_helper is present in your PATH, and
+#HELP   modify your .bashrc or .profile file by adding:
+#HELP 
+#HELP         function kcd(){
+#HELP             source kcd_helper $*
+#HELP             cd $kcd_destination
+#HELP         }
+#HELP         export -f kcd
+#HELP 
+
 
 # Default destination is current directory
 export kcd_destination='.'
@@ -42,6 +54,7 @@ fi
 
 # Options
 #=========================================
+#HELP Other options:
 just_echo="FALSE"
 if [ "$1" = "-e" ]; then
     #HELP 
@@ -66,18 +79,7 @@ elif [ "$1" = "-h" ]; then
     cat $( which kcd_helper) | sed -n "s/^\( \)*#HELP //pg" 
     return
 fi
-#HELP 
-#HELP Installation: 
-#HELP   Make sure that kcd_helper is present in your PATH, and
-#HELP   modify your .bashrc or .profile file by adding:
-#HELP 
-#HELP         function kcd(){
-#HELP             source kcd_helper $*
-#HELP             cd $kcd_destination
-#HELP         }
-#HELP         export -f kcd
-#HELP 
-#HELP 
+
 
 
 
