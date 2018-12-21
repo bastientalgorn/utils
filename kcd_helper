@@ -1,18 +1,29 @@
 #!/bin/bash
 
-#HELP kcd is a tool to navigate directories from command line
-#HELP
+#HELP 
+#HELP kcd (A tools to move between directories)
+#HELP 
 #HELP kcd <shortcut> 
 #HELP   goes to the directory defined by <shortcut>
 #HELP   Shortcuts are defined in $HOME/.kcd_index
-#HELP   Example of shortcuts to define in index file $HOME/.kcd_index
-#HELP   /home/johndoe/utils     => Defines "utils" as a shortcut for "/home/johndoe/utils
-#HELP                              (The last part of the directory is the shortcut)
-#HELP   /home/johndoe/utils u   => Defines "utils" and "u" as shortcuts for "/home/johndoe/utils
-#HELP                              (The last part of the directory and "u" are the shortcuts)
-#HELP   /home/johndoe/utils/ u  => Defines "u" as a shortcut for "/home/johndoe/utils
-#HELP                              (Adding a "/" after "utils" disables "utils" as a shortcut)
-#HELP   If the shortcut is not defined in the index file, then kcd offers to edit the index file.
+#HELP   Example of shortcuts to define in index 
+#HELP   file $HOME/.kcd_index
+#HELP   Example:
+#HELP   /home/johndoe/utils    
+#HELP      => Defines "utils" as a shortcut for "/home/johndoe/utils
+#HELP         (The last part of the directory is the shortcut)
+#HELP   /home/johndoe/utils u  
+#HELP      => Defines "utils" and "u" as shortcuts for "/home/johndoe/utils
+#HELP         (The last part of the directory and "u" are the shortcuts)
+#HELP   /home/johndoe/utils/ u 
+#HELP      => Defines "u" as a shortcut for "/home/johndoe/utils
+#HELP         (Adding a "/" after "utils" disables "utils" as a shortcut)
+#HELP   $TOTO_ROOT/src/ toto
+#HELP      => Defines "toto" as a shortcut for "$TOTO_ROOT/src/", where
+#HELP      $TOTO_ROOT is evaluated when kcd is called.
+#HELP   If the shortcut is not defined in the index file, then kcd offers
+#HELP   to edit the index file.
+#HELP 
 #HELP kcd 
 #HELP   goes to the last directory where kcd was called
 #HELP   (This does not include calls witch kcd -e, kcd -a, or kcd -h)
@@ -33,54 +44,41 @@ fi
 #=========================================
 just_echo="FALSE"
 if [ "$1" = "-e" ]; then
+    #HELP 
     #HELP kcd -e <shortcut> 
     #HELP   returns the full name of the directory
+    #HELP   Example of use:
+    #HELP   cp my_script $(kcd -e utils)
     just_echo="TRUE"
     shift
 elif [ "$1" = "-a" ]; then
+    #HELP 
     #HELP kcd -a
-    #HELP   adds the current directory in the index file
+    #HELP   adds the current directory in the index file,
+    #HELP   then open the index file for edition.
     pwd >> $index_file
     gedit --new-window $index_file &
     return
 elif [ "$1" = "-h" ]; then
+    #HELP 
     #HELP kcd -h
     #HELP   display kcd help
     cat $( which kcd_helper) | sed -n "s/^\( \)*#HELP //pg" 
     return
-elif [ "$1" = "--install" ]; then
-    #HELP kcd_helper --install
-    #HELP   modify ~/.bashrc to install kcd
-    #HELP kcd_helper --install other_file_name
-    #HELP   installs kcd in another file (e.g. .profile or .bashrc.$USER)
-    if [ -z "$2" ]; then
-        target_file="$HOME/.bashrc" 
-    else
-        target_file=$2
-    fi
-    #TODO: check that target file does not already contain the kcd declaration.
-    #TODO: check that target file exists.
-    #TODO: add path of kcd helper
-    echo "Target file : "$target_file
-    echo "You can define kcd in you ~/.bashrc file with the command: kcd --install"
-    echo "To specify another file, use: kcd --install other_file_name"
-    read -e -p "Do you want to install kcd by declaring it in $target_file ? (N/y):" add_in_target_file
-    ls $target_file
-    if [[ $add_in_target_file =~ (y|Y)(e|E)?(s|S)?$ ]]; then
-        echo "Adding kcd declaration"
-        cat $0 | sed -n "s/^#KCD_INSTALL //pg" >> "$target_file"
-    fi    
-    exit
 fi
+#HELP 
+#HELP Installation: 
+#HELP   Make sure that kcd_helper is present in your PATH, and
+#HELP   modify your .bashrc or .profile file by adding:
+#HELP 
+#HELP         function kcd(){
+#HELP             source kcd_helper $*
+#HELP             cd $kcd_destination
+#HELP         }
+#HELP         export -f kcd
+#HELP 
+#HELP 
 
-#KCD_INSTALL 
-#KCD_INSTALL # kcd (A tools to move between directories)
-#KCD_INSTALL function kcd(){
-#KCD_INSTALL     source kcd_helper $*
-#KCD_INSTALL     cd $kcd_destination
-#KCD_INSTALL }
-#KCD_INSTALL export -f kcd
-#KCD_INSTALL 
 
 
 # Arguments
@@ -98,6 +96,7 @@ else
     # Search for a line that starts not with #, then contains the keyword, followed by a space.
     # Keep first match, keep first field
     kcd_destination=$( sed 's/$/ /g' $index_file | grep "^[^#].*\b$keyword "| head -1 | cut -f 1 -d ' ' )
+    echo "$kcd_destination"
     unset keyword
 fi
 
