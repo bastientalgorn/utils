@@ -25,7 +25,7 @@
 #HELP   to edit the index file.
 #HELP 
 #HELP kcd 
-#HELP   goes to the last directory where kcd was called
+#HELP   With no argument, goes to the last directory where kcd was called
 #HELP   (This does not include calls witch kcd -e, kcd -a, or kcd -h)
 #HELP 
 #HELP Installation: 
@@ -98,7 +98,6 @@ else
     # Search for a line that starts not with #, then contains the keyword, followed by a space.
     # Keep first match, keep first field
     kcd_destination=$( sed 's/$/ /g' $index_file | grep "^[^#].*\b$keyword "| head -1 | cut -f 1 -d ' ' )
-    echo "$kcd_destination"
     unset keyword
 fi
 
@@ -126,13 +125,10 @@ else
     kcd_destination=`eval echo $kcd_destination`
     if [ "$just_echo" = "TRUE" ]; then
         echo $kcd_destination
-       
+        kcd_destination="."
     else
-        export last_kcd_location=$( pwd )
+        export last_kcd_location=$(pwd)
         mkdir -p $kcd_destination
     fi
 fi
 unset index_file just_echo destination_env_variable destination_start add_destination
-
-
-
