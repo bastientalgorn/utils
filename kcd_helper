@@ -7,8 +7,8 @@
 #HELP   goes to the directory defined by <shortcut>
 #HELP   Shortcuts are defined in $HOME/.kcd_index
 #HELP   Example of shortcuts to define in index 
-#HELP   file $HOME/.kcd_index
-#HELP   Example:
+#HELP   file $HOME/.kcd_index:
+#HELP 
 #HELP   /home/johndoe/utils    
 #HELP      => Defines "utils" as a shortcut for "/home/johndoe/utils
 #HELP         (The last part of the directory is the shortcut)
@@ -17,10 +17,12 @@
 #HELP         (The last part of the directory and "u" are the shortcuts)
 #HELP   /home/johndoe/utils/ u 
 #HELP      => Defines "u" as a shortcut for "/home/johndoe/utils
-#HELP         (Adding a "/" after "utils" disables "utils" as a shortcut)
+#HELP         (Adding a "/" after "utils" disables the end of the target
+#HELP          as a shortcut)
 #HELP   $TOTO_ROOT/src/ toto
 #HELP      => Defines "toto" as a shortcut for "$TOTO_ROOT/src/", where
-#HELP      $TOTO_ROOT is evaluated when kcd is called.
+#HELP         $TOTO_ROOT is evaluated when kcd is called.
+#HELP
 #HELP   If the shortcut is not defined in the index file, then kcd offers
 #HELP   to edit the index file.
 #HELP 
@@ -90,7 +92,7 @@ if [ "$#" = "0" ]; then
     # (Note: not the content of the variable)
     # Later, the script will check if variables in the destination are set.
     # If $last_kcd_location is not set, that will trigger the appropriate warning.
-    kcd_destination='$last_kcd_location'
+    kcd_destination=${last_kcd_location:-'.'}
 else
     # Get keyword
     keyword=$1
