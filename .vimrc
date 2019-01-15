@@ -1,5 +1,5 @@
-
-colorscheme desert
+" Color scheme
+colorscheme murphy 
 
 " Syntax highlighting
 syntax on
@@ -30,13 +30,23 @@ inoremap <C-k> <ESC>:bp<CR>
 vnoremap <C-j> <ESC>:bn<CR>
 vnoremap <C-k> <ESC>:bp<CR>
 
+" Disable arrows (because otherwise I use them too much)
+" But allow them in insert mod
+nnoremap <Left> <ESC>
+nnoremap <Right> <ESC>
+nnoremap <Up> <ESC>
+nnoremap <Down> <ESC>
+vnoremap <Left> <ESC>
+vnoremap <Right> <ESC>
+vnoremap <Up> <ESC>
+vnoremap <Down> <ESC>
 
 
 
-"Map ctrl+z to undo
+" Map ctrl+z to undo
 nnoremap <C-Z> u
 
-"Move lines up and down with alt+k or alt+j
+" Move lines up and down with alt+k or alt+j
 nnoremap <A-k> :m-2<CR>
 nnoremap <A-j> :m+<CR>
 "inoremap <A-Up> <Esc>:m-2<CR>
@@ -45,12 +55,28 @@ vnoremap <A-k> :m '<-2<CR>gv
 vnoremap <A-j> :m '>+1<CR>gv 
 
 " Map ctr+s to save file
-nnoremap <silent> <C-S>        :update<CR>
-vnoremap <silent> <C-S>   <ESC>:update<CR>
-inoremap <silent> <C-S>   <ESC>:update<CR>
+nnoremap <C-S>        :update<CR>
+vnoremap <C-S>   <ESC>:update<CR>
+inoremap <C-S>   <ESC>:update<CR>
 
-" Remove/add comments at the begining of line with alt+h/alt+l
-nnoremap <A-h> <<
-nnoremap <A-l> >> 
+" Add remove tabs with TAB
+inoremap <S-Tab> <ESC><<i
+nnoremap <Tab> >>
+nnoremap <S-Tab> <<
 
 
+" Use F5 to run script
+function! Gvr()
+    update
+    echom "Current file: " @%
+    echom "Current dir: " %:p:h
+    if filereadable( '%:p:h/run' )
+        echom "Found local run file"
+        ! '%:p:h/run'
+    else
+        echom "Call generic gvimrc runner"
+        ! exec gvimrun %
+    endif
+endfunction
+nnoremap <F5> :call Gvr()<CR>
+nnoremap <F4> :so%<CR>
