@@ -1,0 +1,29 @@
+#!/bin/bash
+
+exefile=$1
+shift
+
+# Test if file exists
+if [ -e $exefile ]
+then
+    echo "$exefile already exists. Add execution rights."
+    chmod +x $exefile
+else
+    echo "Creating $exefile with execution rights."
+    # Create bash script
+    echo "#!/bin/bash" > $exefile
+    echo "" >> $exefile
+    echo "echo \"Running $exefile...\"" >> $exefile
+    chmod +x $exefile
+
+    # If more than one arguments, copy other args in the script
+    if [[ $# -ne 0 ]]
+    then
+        echo " " >> $exefile
+        echo $@  >> $exefile
+    fi
+fi
+
+# Open with gedit.
+gvim $exefile &
+

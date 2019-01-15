@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo "Args: $@"
+fileName=$1
+extension="${fileName##*.}"
+echo "File name: "$fileName
+echo "File extention: "$extension
+
+if [ "$extension" = "tex" ]
+then
+    # latex compilation
+    echo "Latex compilation: "$fileName
+    echo "=================================================================="
+    smartTex $fileName
+elif [ "$extension" = "py" ] 
+then
+    echo "Python: "$fileName
+    echo "=================================================================="
+    echo "python3 $fileName" 
+    python3 $fileName &
+    # TODO: smart Py 
+elif [ "$extension" = "cpp" ] || [ "$extension" = "hpp" ] || [ "$fileName" = "makefile" ]
+then
+    echo "C++ compilation: "$fileName
+    echo "=================================================================="
+    make -j
+else
+    # Other execution
+    echo "Run file "$fileName
+    echo "=================================================================="
+    eval $fileName
+fi
