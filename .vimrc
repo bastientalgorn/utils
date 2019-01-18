@@ -47,6 +47,7 @@ vnoremap <Down> <ESC>
 nnoremap <C-Z> u
 " Ctrl+i to exit include mode
 inoremap <C-i> <ESC>
+vnoremap <C-i> <ESC>
 
 
 " Move lines up and down with alt+k or alt+j
@@ -66,6 +67,8 @@ inoremap <C-S>   <ESC>:update<CR>
 inoremap <S-Tab> <ESC><<i
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
 
 " Delete new lines
 set backspace=indent,eol,start
