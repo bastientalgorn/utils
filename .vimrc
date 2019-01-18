@@ -67,6 +67,12 @@ inoremap <S-Tab> <ESC><<i
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
 
+" Delete new lines
+set backspace=indent,eol,start
+set noendofline binary
+set whichwrap+=<,>,h,l,[,]
+
+
 
 " Use F5 to run script
 function! Gvr()
