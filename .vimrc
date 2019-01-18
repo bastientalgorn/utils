@@ -45,6 +45,9 @@ vnoremap <Down> <ESC>
 
 " Map ctrl+z to undo
 nnoremap <C-Z> u
+" Ctrl+i to exit include mode
+inoremap <C-i> <ESC>
+
 
 " Move lines up and down with alt+k or alt+j
 nnoremap <A-k> :m-2<CR>
