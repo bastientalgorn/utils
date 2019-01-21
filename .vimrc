@@ -14,10 +14,16 @@ filetype on
 " Allow to change buffer without saving
 set hidden
 
+" Delete new lines
+set backspace=indent,eol,start
+set noendofline binary
+set whichwrap+=<,>,h,l,[,]
+
 "Set a tab as 4 spaces for all files
 set tabstop=4 shiftwidth=4 expandtab
+"autocmd FileType cpp,hpp,h,c,py,sh set tabstop=4 shiftwidth=4 expandtab
 " For make files, do not expand tabs
-autocmd FileType gmake,make set noexpandtab shiftwidth=4 softtabstop=0
+"autocmd FileType gmake,make set noexpandtab shiftwidth=4 softtabstop=0
 " Display real tabs as #...
 set list
 set listchars=tab:#.
@@ -58,24 +64,23 @@ nnoremap <A-j> :m+<CR>
 vnoremap <A-k> :m '<-2<CR>gv
 vnoremap <A-j> :m '>+1<CR>gv 
 
+
+"vnoremap <A-j> :m '>+1<CR>gv 
+"nnoremap <A-b> :<-1,<+1m<+2<CR>
+
+
 " Map ctr+s to save file
-nnoremap <C-S>        :update<CR>
-vnoremap <C-S>   <ESC>:update<CR>
-inoremap <C-S>   <ESC>:update<CR>
+nnoremap <C-S> <ESC>:update<CR>
+vnoremap <C-S> <ESC>:update<CR>
+inoremap <C-S> <ESC>:update<CR>
 
 " Add remove tabs with TAB
+inoremap <Tab> <Space><Space><Space><Space>
 inoremap <S-Tab> <ESC><<i
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
-
-" Delete new lines
-set backspace=indent,eol,start
-set noendofline binary
-set whichwrap+=<,>,h,l,[,]
-
-
 
 " Use F5 to run script
 function! Gvr()
