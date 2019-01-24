@@ -51,9 +51,7 @@ vnoremap <Down> <ESC>
 
 " Map ctrl+z to undo
 nnoremap <C-Z> u
-" Ctrl+i to exit include mode
-inoremap <C-i> <ESC>
-vnoremap <C-i> <ESC>
+
 
 
 " Move lines up and down with alt+k or alt+j
@@ -81,6 +79,10 @@ nnoremap <Tab> >>
 nnoremap <S-Tab> <<
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
+
+" Ctrl+i to exit include mode
+inoremap <C-i> <ESC><space>
+vnoremap <C-i> <ESC>
 
 " Use F5 to run script
 function! Gvr()
