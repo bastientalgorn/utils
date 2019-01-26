@@ -14,16 +14,14 @@ filetype on
 " Allow to change buffer without saving
 set hidden
 
-" Delete new lines
+" Allow to use backspace to remove all sorts of characters
 set backspace=indent,eol,start
-set noendofline binary
-set whichwrap+=<,>,h,l,[,]
-
 "Set a tab as 4 spaces for all files
-set tabstop=4 shiftwidth=4 expandtab
-"autocmd FileType cpp,hpp,h,c,py,sh set tabstop=4 shiftwidth=4 expandtab
+set tabstop=4 
+set shiftwidth=4 
+autocmd FileType c,cpp,h,hpp,sh,py setlocal expandtab
 " For make files, do not expand tabs
-"autocmd FileType gmake,make set noexpandtab shiftwidth=4 softtabstop=0
+autocmd FileType gmake,make setlocal noexpandtab 
 " Display real tabs as #...
 set list
 set listchars=tab:#.
@@ -73,16 +71,15 @@ vnoremap <C-S> <ESC>:update<CR>
 inoremap <C-S> <ESC>:update<CR>
 
 " Add remove tabs with TAB
-inoremap <Tab> <Space><Space><Space><Space>
 inoremap <S-Tab> <ESC><<i
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
-" Ctrl+i to exit include mode
-inoremap <C-i> <Right><ESC>
-vnoremap <C-i> <ESC>
+" Alt+i to exit include mode
+inoremap <A-i> <Right><ESC>:echo "Quit Insert Mode"<CR>
+vnoremap <A-i> <ESC>:echo "Quit Insert Mode"<CR>
 
 " Use F5 to run script
 function! Gvr()
