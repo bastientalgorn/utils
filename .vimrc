@@ -81,7 +81,7 @@ vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
 " Ctrl+i to exit include mode
-inoremap <C-i> <ESC><space>
+inoremap <C-i> <Right><ESC>
 vnoremap <C-i> <ESC>
 
 " Use F5 to run script
