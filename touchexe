@@ -25,5 +25,5 @@ else
 fi
 
 # Open with gedit.
-gvim $exefile &
+$EDITOR $exefile &
 
