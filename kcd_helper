@@ -42,6 +42,8 @@
 #HELP 
 
 #TODO: check that the EDITOR is correctly defined. Define a fallback. 
+#TODO: when opening the .kcd_index file, go directly to last line.
+
 
 # Default destination is current directory
 export kcd_destination='.'
