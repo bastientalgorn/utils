@@ -51,7 +51,8 @@ export kcd_destination='.'
 index_file="$HOME/.kcd_index"
 if [ ! -e $index_file ]; then
     echo "Could not find directory file "$index_file
-    # In that case, this script will offer to create the directory file.
+    echo "Creating the directory..."
+    touch $index_file
 fi
 
 # Options
