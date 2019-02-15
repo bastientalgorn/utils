@@ -115,6 +115,8 @@ if [ -z "$kcd_destination" ]; then
     # If yes, then edit directory file
     if [[ $add_destination =~ (y|Y)(e|E)?(s|S)?$ ]]; then
         $EDITOR $index_file &
+    else
+        kcd_destination='.'        
     fi
 else
     # Check if destination starts with an env variable, and this env variable is not empty
