@@ -41,9 +41,6 @@
 #HELP         export -f kcd
 #HELP 
 
-#TODO: check that the EDITOR is correctly defined. Define a fallback. 
-#TODO: when opening the .kcd_index file, go directly to last line.
-
 
 # Default destination is current directory
 export kcd_destination='.'
@@ -54,8 +51,7 @@ export kcd_destination='.'
 index_file="$HOME/.kcd_index"
 if [ ! -e $index_file ]; then
     echo "Could not find directory file "$index_file
-    echo "Creating the directory..."
-    touch $index_file
+    # In that case, this script will offer to create the directory file.
 fi
 
 # Options
@@ -73,10 +69,16 @@ if [ "$1" = "-e" ]; then
 elif [ "$1" = "-a" ]; then
     #HELP 
     #HELP kcd -a
-    #HELP   adds the current directory in the index file,
+    #HELP   Add the current directory to the index file,
     #HELP   then open the index file for edition.
     pwd >> $index_file
-    $EDITOR $index_file &
+    $EDITOR $index_file 
+    return
+elif [ "$1" = "-o" ]; then
+    #HELP 
+    #HELP kcd -o
+    #HELP   Open the index file for edition.
+    $EDITOR $index_file 
     return
 elif [ "$1" = "-h" ]; then
     #HELP 
@@ -95,7 +97,7 @@ if [ "$#" = "0" ]; then
     # Set destination as the variable last_kcd_location
     # (Note: not the content of the variable)
     # Later, the script will check if variables in the destination are set.
-    # If $last_kcd_location is not set, return "." as last location.
+    # If $last_kcd_location is not set, that will trigger the appropriate warning.
     kcd_destination=${last_kcd_location:-'.'}
 else
     # Get keyword
@@ -114,9 +116,9 @@ if [ -z "$kcd_destination" ]; then
     read -e -p "Could not find a matching address. Do you want to add one? (N/y):" add_destination
     # If yes, then edit directory file
     if [[ $add_destination =~ (y|Y)(e|E)?(s|S)?$ ]]; then
-        $EDITOR $index_file &
+        $EDITOR $index_file 
     else
-        kcd_destination='.'        
+        kcd_destination='.'
     fi
 else
     # Check if destination starts with an env variable, and this env variable is not empty
@@ -139,4 +141,3 @@ else
         mkdir -p $kcd_destination
     fi
 fi
-unset index_file just_echo destination_env_variable destination_start add_destination
