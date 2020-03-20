@@ -64,7 +64,6 @@ fi
 #HELP ====================================================================================
 
 # Default options
-pmt_options="--exclude-dir=./pmt_linux_build/*" # --exclude-dir=./pmt_arch" #Exclude pmt files
 extensions="c cc cpp h hpp"
 grep_options='-nrFIi'
 just_open_file="FALSE"
@@ -84,11 +83,6 @@ while [ "$parse" == "TRUE" ]
 do
 key="$1"
 case $key in
-    --pmt)
-        #HELP --pmt: includes pmt directory
-        pmt_options=" " # Do not exclude pmt files
-        shift
-        ;;
     -i|--include)
         #HELP -i <ext>: searches ALSO in files with extension <ext>
         add_extension=$2
