@@ -1,6 +1,6 @@
 #/bin/bash
 
-trashDir=/p/psg/swip/w/btalgorn/.trash
+trashDir=~/.trash
 
 while [[ "$1" == "-r" ]] || [[ "$1" == "-f" ]] || [[ "$1" == "-rf" ]] || [[ "$1" == "-fr" ]]
 do
