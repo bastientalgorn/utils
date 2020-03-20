@@ -1,15 +1,44 @@
-#!/bin/bash
+#/bin/bash
+
+trashDir=/p/psg/swip/w/btalgorn/.trash
+
+while [[ "$1" == "-r" ]] || [[ "$1" == "-f" ]] || [[ "$1" == "-rf" ]] || [[ "$1" == "-fr" ]]
+do
+    echo "rm is aliased with \"move_to_trash\". Ignoring option $1"
+    shift
+done
+
 
 # Get current directory
 curDir=`pwd`
 # Create directory name with date and time
 t=`date +"%Y-%m-%d/%Hh%Mm%Ss"`
 
+RED='\033[1;31m'
+DESPERATE='\033[1;7m'
+GREEN='\033[1;32m'
+NC='\033[0m' # No Color
 
-for var in "$@"
-do
-    echo "move $var to ~/.trash/$t$curDir"
-    mkdir -p ~/.trash/$t$curDir
-    mv $var ~/.trash/$t$curDir
-    echo $t' '`pwd`' '$@ >> ~/.trash/log
-done
+var=`echo $@`
+echo -e "move "$RED$var$NC" to $trashDir/$t$curDir/"
+mkdir -p $trashDir/$t$curDir
+mv $@  $trashDir/$t$curDir
+echo $t$curDir" $var" >> $trashDir/log
+
+# Display free space
+info_df=$(df -h . | tail -1 | awk '{print "Used space: ",$2," out of ",$1," (",$4,")"}')
+prct=$(df -h . | tail -1 | awk '{print $4}' | sed -s 's/%//')
+#echo $info_df
+#echo $prct
+if [ $prct -lt 50 ]
+then
+    info_df=$GREEN$info_df$NC
+elif [ $prct -gt 90 ]
+then
+    info_df=$DESPERATE$info_df' (VERY HIGH!!)'$NC
+elif [ $prct -gt 70 ]
+then
+    info_df=$RED$info_df' (High...)'$NC
+fi
+echo -e $info_df
+

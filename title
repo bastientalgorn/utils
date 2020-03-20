@@ -1,0 +1,53 @@
+#!/bin/bash
+
+
+function l_padding {
+    str=$1
+    num=`tput cols`
+    v=$(printf "%-${num}s" "$str")
+    echo "${v// /$str}"
+}
+
+function l_display {
+    if [ "$color" == "GREEN" ]
+    then
+        echo -e "\033[1;32m"$@"\e[0m"
+    elif [ "$color" == "RED" ]
+    then
+        echo -e "\033[1;31m"$@"\e[0m"
+    else
+        echo -e $@
+    fi
+}
+
+function l_create_padded_string {
+    # Create some padding
+    if [ -z "$1" ]
+    then
+        v="======"`l_padding "="`
+    else
+        v="====== "$@" "`l_padding "="`
+    fi
+    #terminal width
+    tw=$(tput cols)
+    # Cut excess
+    v=$(echo $v | head -c $tw)
+    # Return padded string
+    l_display $v
+}
+
+color="NONE"
+
+if [ "$1" == "--big" ]
+then
+    shift
+    color="GREEN"
+    l_create_padded_string
+    l_create_padded_string $@
+    l_create_padded_string
+        
+else
+    l_create_padded_string $@
+fi
+
+

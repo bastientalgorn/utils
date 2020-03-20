@@ -1,14 +1,27 @@
 #!/bin/bash
 
+function l_fast_delete(){
+    echo "Create empty directory"
+    empty=/tmp/emtpy$RANDOM$RANDOM
+    mkdir $empty
 
+    echo "Sync"
+    rsync -a --delete $empty/ $1/
+
+    echo "Remove empty dir"
+    /bin/rm -rf $emtpy
+}
+
+trashDir=/p/psg/swip/w/btalgorn/.trash
 if [ "$1" = "clean" ]
-then 
-  echo "Permanently delete all the trash files."
-  \rm -rIv ~/.trash/20*
-  t=`date +"%Y-%m-%d/%Hh%Mm%Ss"`
-  echo "$t Clean trash" >> ~/.trash/log
+then
+    echo "Permanently delete all the trash files."
+    l_fast_delete $trashDir
+elif [ "$1" = "info" ]
+then
+    du -h --max-depth=0 $trashDir
 else
-  echo "Enter the following command to clean all the trash files:"
-  echo "./clean_trash clean"
+    echo "Enter the following command to clean all the trash files:"
+    echo "./clean_trash clean"
 fi
 

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+source_file=$1
+keyword=$2
+grep "^$keyword " $source_file | sed "s/$keyword //g"
