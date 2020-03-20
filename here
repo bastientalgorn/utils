@@ -12,6 +12,3 @@ else
     pwd >> /tmp/.here
 fi
 echo "\"there\" is $(there)"
-
-add_html_link there $(there)
-
