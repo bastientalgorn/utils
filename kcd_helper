@@ -69,7 +69,7 @@ elif [ "$1" = "-a" ]; then
     #HELP   Add the current directory to the index file,
     #HELP   then open the index file for edition.
     shift
-    echo $(pwd_qshell) $@ >> $index_file
+    echo $(pwd) $@ >> $index_file
     $EDITOR $index_file 
     return
 elif [ "$1" = "-o" ]; then
