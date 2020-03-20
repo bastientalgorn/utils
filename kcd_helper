@@ -137,8 +137,6 @@ else
         echo $kcd_destination
         kcd_destination="."
     else
-        # Start subshell to modify link page
-        (add_html_link ${keyword:-LINK} $kcd_destination &)
         export last_kcd_location=$(pwd)
         mkdir -p $kcd_destination
     fi
