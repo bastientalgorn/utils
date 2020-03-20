@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ "$1" = "-b" ]
+then
+    # Go back...
+    sed -i '$ d' /tmp/.here
+elif [ "$1" = "-c" ]
+then
+    # Clean file
+    pwd > /tmp/.here  
+else
+    # Append current dir to file
+    pwd >> /tmp/.here
+fi
+echo "\"there\" is $(there)"
+
+add_html_link there $(there)
+

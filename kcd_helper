@@ -23,9 +23,6 @@
 #HELP      => Defines "toto" as a shortcut for "$TOTO_ROOT/src/", where
 #HELP         $TOTO_ROOT is evaluated when kcd is called.
 #HELP
-#HELP   If the shortcut is not defined in the index file, then kcd offers
-#HELP   to edit the index file.
-#HELP 
 #HELP kcd 
 #HELP   With no argument, goes to the last directory where kcd was called
 #HELP   (This does not include calls witch kcd -e, kcd -a, or kcd -h)
@@ -71,7 +68,8 @@ elif [ "$1" = "-a" ]; then
     #HELP kcd -a
     #HELP   Add the current directory to the index file,
     #HELP   then open the index file for edition.
-    pwd >> $index_file
+    shift
+    echo $(pwd_qshell) $@ >> $index_file
     $EDITOR $index_file 
     return
 elif [ "$1" = "-o" ]; then
@@ -106,29 +104,31 @@ else
     # Search for a line that starts not with #, then contains the keyword, followed by a space.
     # Keep first match, keep first field
     kcd_destination=$( sed 's/$/ /g' $index_file | grep "^[^#].*\b$keyword "| head -1 | cut -f 1 -d ' ' )
-    unset keyword
 fi
 
 # Check, interpret, and offer to edit
 #=========================================
 # If no match, offer to edit the directory
 if [ -z "$kcd_destination" ]; then
-    read -e -p "Could not find a matching address. Do you want to add one? (N/y):" add_destination
-    # If yes, then edit directory file
-    if [[ $add_destination =~ (y|Y)(e|E)?(s|S)?$ ]]; then
-        $EDITOR $index_file 
-    else
-        kcd_destination='.'
-    fi
+    echo "Could not find a matching address."
+    kcd_destination='.'
 else
-    # Check if destination starts with an env variable, and this env variable is not empty
-    destination_env_variable=$( echo $destination | cut -f 1 -d "/" | grep -o "^$.*" )
-    if [ ! -z "$destination_env_variable" ]; then
-        destination_start=`eval echo $destination_env_variable`
-        if [ "$destination_start" = "" ]; then
-            echo "Destination starts with empty variable "$destination_env_variable". Do nothing."
-            return
+    # Check if destination contains empty/unset variables
+    has_unset_var="FALSE"
+    kcd_list_vars=$( sed -e "s#/[^\$]*/# #g" -e "s#/# #g" <<< "/"$kcd_destination"/" )
+    for var in $kcd_list_vars
+    do
+        var_value=$( eval echo $var )
+        if [ -z $var_value ]
+        then
+            echo "Address contains a variable that is empty or not set: $var"
+            has_unset_var="TRUE"
         fi
+    done
+    if [ "$has_unset_var" == "TRUE" ]
+    then
+        kcd_destination="."
+        return
     fi
 
     # Evaluate destination
@@ -137,7 +137,10 @@ else
         echo $kcd_destination
         kcd_destination="."
     else
+        # Start subshell to modify link page
+        (add_html_link ${keyword:-LINK} $kcd_destination &)
         export last_kcd_location=$(pwd)
         mkdir -p $kcd_destination
     fi
+    unset keyword
 fi
